@@ -2,20 +2,20 @@ import React, { useMemo, useState } from 'react';
 import { Platform, Text } from 'react-native';
 import { router } from 'expo-router';
 
-import MediaLayout from '../components/layout/MediaLayout';
-import Dashboard from '../components/dashboard/Dashboard';
-import AudioCollection from '../components/collections/AudioCollection';
-import VideoCollection from '../components/collections/VideoCollection';
-import ImageCollection from '../components/collections/ImageCollection';
-import Loading from '../components/common/Loading';
+import MediaLayout from '../../components/layout/MediaLayout';
+import Dashboard from '../../components/dashboard/Dashboard';
+import AudioCollection from '../../components/collections/AudioCollection';
+import VideoCollection from '../../components/collections/VideoCollection';
+import ImageCollection from '../../components/collections/ImageCollection';
+import Loading from '../../components/common/Loading';
 
-import { useMediaController } from '../hooks/useMediaController';
-import { useMediaSearch } from '../hooks/useMediaSearch';
+import { useMediaController } from '../../hooks/useMediaController';
+import { useMediaSearch } from '../../hooks/useMediaSearch';
 
 import {
   MediaItem,
   Section,
-} from '../types/media';
+} from '../../types/media';
 
 export default function Home() {
   const {

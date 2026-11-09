@@ -1,11 +1,91 @@
 import React from 'react';
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
-import { MEDIA_ICONS } from '../../constants/mediaTypes';
-import { MediaItem } from '../../types/media';
-import { formatFileSize } from '../../utils/formatFileSize';
-import DeleteButton from '../common/DeleteButton';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { useRouter } from 'expo-router'; // 1. Import useRouter dari expo-router
 
-export default function MediaCard({ item, onPress, onDelete }: { item: MediaItem; onPress: () => void; onDelete: () => void }) {
-  return <View style={styles.wrapper}><Pressable onPress={onPress} style={styles.card}>{item.type === 'image' ? <Image source={{ uri: item.uri }} style={styles.preview} resizeMode="cover" /> : <View style={styles.preview}><Text style={styles.icon}>{MEDIA_ICONS[item.type]}</Text></View>}<Text numberOfLines={1} style={styles.name}>{item.name}</Text><Text style={styles.meta}>{formatFileSize(item.size)}</Text></Pressable><DeleteButton onPress={onDelete} /></View>;
+// Interface disesuaikan dengan kebutuhan property data media di projekmu
+interface MediaCardProps {
+  id: string;
+  title: string;
+  type: 'audio' | 'video' | 'image';
 }
-const styles = StyleSheet.create({ wrapper: { width: 180, marginRight: 12, marginBottom: 16 }, card: { backgroundColor: '#191919', borderRadius: 8, overflow: 'hidden' }, preview: { width: '100%', height: 105, backgroundColor: '#242424', alignItems: 'center', justifyContent: 'center' }, icon: { fontSize: 34 }, name: { color: '#fff', fontWeight: '700', paddingHorizontal: 10, paddingTop: 9 }, meta: { color: '#888', fontSize: 11, padding: 10 } });
+
+export default function MediaCard({ id, title, type }: MediaCardProps) {
+  const router = useRouter(); // 2. Inisialisasi router di dalam komponen
+
+  // 3. Fungsi navigasi imperatif yang sudah disesuaikan dengan Typed Routes projekmu
+  const handlePressMedia = () => {
+    let targetPath: "/media/audio-player" | "/media/video-player" | "/media/image-viewer";
+
+    if (type === 'audio') {
+      targetPath = "/media/audio-player";
+    } else if (type === 'video') {
+      targetPath = "/media/video-player";
+    } else {
+      targetPath = "/media/image-viewer"; // Menggunakan image-viewer sesuai struktur folder aslimu
+    }
+
+    // Jalankan navigasi secara imperatif dengan mengirimkan parameter data media
+    router.push({
+      pathname: targetPath,
+      params: { id: id, title: title }
+    });
+  };
+
+  return (
+    // 4. Trigger navigasi saat kartu media ditekan oleh user
+    <TouchableOpacity style={styles.card} onPress={handlePressMedia}>
+      <View style={styles.thumbnailContainer}>
+        <Text style={styles.icon}>
+          {type === 'audio' ? '🎵' : type === 'video' ? '🎥' : '🖼️'}
+        </Text>
+      </View>
+      <View style={styles.infoContainer}>
+        <Text style={styles.title} numberOfLines={1}>
+          {title}
+        </Text>
+        <Text style={styles.typeText}>{type.toUpperCase()}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+}
+
+const styles = StyleSheet.create({
+  card: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 12,
+    marginVertical: 6,
+    flexDirection: 'row',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  thumbnailContainer: {
+    width: 50,
+    height: 50,
+    borderRadius: 8,
+    backgroundColor: '#f0f0f0',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  icon: {
+    fontSize: 24,
+  },
+  infoContainer: {
+    flex: 1,
+    marginLeft: 12,
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+  },
+  typeText: {
+    fontSize: 12,
+    color: '#888',
+    marginTop: 2,
+  },
+});
